@@ -1,0 +1,19 @@
+name: Repro for `require("fs").promises.exists` bug
+
+on:
+  push:
+    branches: "*"
+
+jobs:
+  repro:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+    - name: run commands
+      run: |
+        sudo mkdir /media/rofs
+        sudo mount -r -t tmpfs tmpfs /media/rofs
+        cd /media/rofs
+        ESLINT_USE_FLAT_CONFIG=true npx eslint@8.55.0 --no-config-lookup --no-error-on-unmatched-pattern .

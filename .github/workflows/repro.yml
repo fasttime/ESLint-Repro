@@ -1,0 +1,20 @@
+name: Repro for `lint files on different drive` bug
+
+on:
+  push:
+    branches: '*'
+
+jobs:
+  repro:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/setup-node@v4
+      with:
+        node-version: '22.2.0'
+    - name: create file "X:\foo.js" with content "foo()"
+      run: |
+        mkdir new-dir
+        subst X: new-dir
+        echo "foo()" > X:\foo.js
+    - name: lint
+      run: 'npx eslint --no-config-lookup --rule "no-undef: error" X:\foo.js'
